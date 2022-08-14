@@ -1,0 +1,3 @@
+select ?id ?label where {
+    ?id <http://www.edutella.org/bibtex#keyword> ?label. 
+}

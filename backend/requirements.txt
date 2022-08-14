@@ -1,0 +1,5 @@
+lxml
+rdflib
+sentence-transformers
+Flask
+Flask-Cors
