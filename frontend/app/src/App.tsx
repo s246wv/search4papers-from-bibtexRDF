@@ -10,9 +10,9 @@ const { Search } = Input
 const onLoad = (value: string) => {
   console.log(value);
   Axios.post("http://localhost:5000/onLoad", {
-    post_text: value
+    url: value
   }).then((res: any)=>{
-    alert(res.data.result)
+    alert(res)
   })
 }
 
