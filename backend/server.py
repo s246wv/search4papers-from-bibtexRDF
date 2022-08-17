@@ -42,7 +42,6 @@ def onLoad():
     print(url)
     rdf_graph = load.load(url)
     embedding = embed.embed(rdf_graph)
-    print(embedding)
     return url
 
 if __name__ == "__main__":
