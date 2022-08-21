@@ -1,7 +1,7 @@
 from rdflib import Graph
 import json
 
-def loadACMCCS:
+def loadACMCCS():
     graph = Graph()
     # The 'publicID' is unofficial base URI. 
     graph.parse("acm_ccs2012-1626988337597.xml", publicID="https://dl.acm.org/ccs/")

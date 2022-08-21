@@ -1,5 +1,6 @@
 import React from 'react';
 import { Input, Space, TreeSelect } from 'antd';
+import 'antd/dist/antd.css';
 import Axios from 'axios';
 
 //import './App.css';
@@ -24,23 +25,23 @@ const loadTree = () => {
 
 function App() {
   return (
-    <div className="App">
+    <div className="App" style={{margin: 100}}>
       <header className="App-header">
-        {/* <Search placeholder="RDFファイルのURLを入力してください" enterButton="Load" onSearch={onLoad} /> */}
-        <br/>
-        <br/>
-        <Space direction="vertical">
-        <TreeSelect treeLine={true} style={{ width: 500 }}>
-          <TreeNode value="parent 1" title="parent 1">
-            <TreeNode value="parent 1-0" title="parent 1-0">
-              <TreeNode value="leaf1" title="my leaf" />
-              <TreeNode value="leaf2" title="your leaf" />
+        <Search placeholder="RDFファイルのURLを入力してください" enterButton="Load" onSearch={onLoad} />
+        <br />
+        <br />
+        <Space direction="vertical" style={{textAlign: 'center'}}>
+          <TreeSelect treeLine={true} style={{ width: 500 }}>
+            <TreeNode value="parent 1" title="parent 1">
+              <TreeNode value="parent 1-0" title="parent 1-0">
+                <TreeNode value="leaf1" title="my leaf" />
+                <TreeNode value="leaf2" title="your leaf" />
+              </TreeNode>
+              <TreeNode value="parent 1-1" title="parent 1-1">
+                <TreeNode value="sss" title="sss" />
+              </TreeNode>
             </TreeNode>
-            <TreeNode value="parent 1-1" title="parent 1-1">
-              <TreeNode value="sss" title="sss" />
-            </TreeNode>
-          </TreeNode>
-        </TreeSelect>
+          </TreeSelect>
         </Space>
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
