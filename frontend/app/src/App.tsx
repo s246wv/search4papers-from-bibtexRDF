@@ -19,13 +19,19 @@ const onLoad = (value: string) => {
 
 const loadTree = () => {
   let tree;
+  let response;
+  Axios.get("http://localhost:5000/getTree").then((res: any) => {
+    response = res.json();
+  })
+  /*ここでtreeを作ります */
+  
 
   return tree;
 }
 
 function App() {
   return (
-    <div className="App" style={{margin: 100}}>
+    <div className="App" style={{margin: 100, width: 500}}>
       <header className="App-header">
         <Search placeholder="RDFファイルのURLを入力してください" enterButton="Load" onSearch={onLoad} />
         <br />
