@@ -20,23 +20,27 @@ const onLoad = (value: string) => {
 const loadTree = () => {
   let tree;
   let response;
-  Axios.get("http://localhost:5000/getTree").then((res: any) => {
-    response = res.json();
-  })
-  /*ここでtreeを作ります */
-  
+  async () => {
+    await Axios.get("http://localhost:5000/getTree").then((res: any) => {
+      response = res.json();
+    })
+    /*ここでtreeを作ります */
+    for (let i = 0; i < response.length; i++) {
+      // 入れ子が面倒．
+    }
+  }
 
   return tree;
 }
 
 function App() {
   return (
-    <div className="App" style={{margin: 100, width: 500}}>
+    <div className="App" style={{ margin: 100, width: 500 }}>
       <header className="App-header">
         <Search placeholder="RDFファイルのURLを入力してください" enterButton="Load" onSearch={onLoad} />
         <br />
         <br />
-        <Space direction="vertical" style={{textAlign: 'center'}}>
+        <Space direction="vertical" style={{ textAlign: 'center' }}>
           <TreeSelect treeLine={true} style={{ width: 500 }}>
             <TreeNode value="parent 1" title="parent 1">
               <TreeNode value="parent 1-0" title="parent 1-0">

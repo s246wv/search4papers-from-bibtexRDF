@@ -6,8 +6,7 @@ from urllib import response
 from flask import Flask
 from flask import request, make_response, jsonify
 from flask_cors import CORS
-from backend.utils.loadACMCCS import loadACMCCS
-from utils import load, embed
+from utils import load, embed, loadACMCCS
 
 # app = Flask(__name__, static_folder="./build/static", template_folder="./build")
 app = Flask(__name__)
@@ -26,7 +25,7 @@ def index():
 
 @app.route("/getTree", methods=['GET'])
 def getTree():
-    response = loadACMCCS()
+    response = loadACMCCS.loadACMCCS()
     return make_response(jsonify(response))
 
 @app.route("/getPapers", methods=['GET'])
