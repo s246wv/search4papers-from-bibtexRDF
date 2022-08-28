@@ -24,9 +24,45 @@ const loadTree = () => {
     await Axios.get("http://localhost:5000/getTree").then((res: any) => {
       response = res.json();
     })
+    function TreeNodeMaker(props: any) {
+      return (
+        <TreeNode value={props.parentValue} title={props.parentLabel}>
+          {props.children}
+        </TreeNode>
+      )
+    }
+    function LeafNodeMaker(props: any) {
+      return (
+        <TreeNode value={props.childValue} title={props.childLabel} />
+      )
+    }
     /*ここでtreeを作ります */
+    let leaves = [];
+    
     for (let i = 0; i < response.length; i++) {
-      // 入れ子が面倒．
+      /**
+       * leafを先に見つけないといけないのかな．
+       * leafからparentをたどっていく．(゜-゜)．元のresponseの形を変えたほうが良いなあ．
+       * child valueをキーにして他の三つの情報を持たせると作りよいかしら．
+       * rootからたどらないかんか．parentをキーにして情報をとってくるのか．
+       * だめか．タグを閉じられない．．一筆書きをすればよいのか？？
+       * jsonをtree構造で返すのか．．↓こんな感じ？
+       * {rootvalue: {
+       *    parentlabel: "fafdsa",
+       *    childvalue: {
+       *      parentlabel: "fdsaf",
+       *      leafvalue: {
+       *        parentvalue: "gagasdas"
+       *      }
+       *    }
+       *    childvalue: {
+       *      parentlabel: "fdsaf",
+       *      leafvalue: {
+       *        parentvalue: "gagasdas"
+       *      }
+       *  }
+       * }
+       */
     }
   }
 
