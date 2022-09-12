@@ -24,26 +24,42 @@ def loadACMCCS():
     qres1 = graph.query(query1)
     qres2 = graph.query(query2)
 
-    ret = {}
+    dict = {}
     for row in qres1:
         root = row[0].toPython()
         rootLabel = row[1].toPython()
-        ret[root] = {"parentLabel": rootLabel}
-    for row in qres2:
-        for key in ret:
-            if(key == row["parent"]):
-                ret[key][row["child"]] = {"parentLabel": row["childLabel"]}
-                # 再帰が必要だわ．
+        dict[root] = {"parentLabel": rootLabel}
+    print(dict)
 
     keys = [ key.toPython() for key in qres2.vars]
-    ret = []
+    query_response = []
     for row in qres2:
-        dict = {}
+        temp_dict = {}
         for key, e in zip(keys,row):
-            dict[key] = e
-        ret.append(dict)
-    
+            temp_dict[key] = e.toPython()
+        query_response.append(temp_dict)
+    print(query_response)
+
+    ret = makeTreeJson(dict, query_response)
     return ret
 
+###
+# func(dict, dict2):
+#   dictがreturnするもの．
+#   dict2がSPARQL結果．
+#   for key in dict:
+#       for e in dict2:
+#           if key == e["?parent"]:
+#               
+#               ret = func(dict[key], dict2)
+#               dict[key][e["?child"]] = ret
+#   return(dict)
+#  
 
-    
+def makeTreeJson(dict, query_response):
+    for key in dict:
+        for row in query_response:
+            if key == row["?parent"]:
+                ret = makeTreeJson(dict[key], query_response)
+                dict[key][row["?child"]] = ret
+    return dict
