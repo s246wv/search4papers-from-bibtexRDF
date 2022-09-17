@@ -5,90 +5,90 @@ import Axios from 'axios';
 
 //import './App.css';
 
-const { Search } = Input
-const { TreeNode } = TreeSelect
 
-const onLoad = (value: string) => {
-  console.log(value);
-  Axios.post("http://localhost:5000/onLoad", {
-    url: value
-  }).then((res: any) => {
-    //alert(res)
-  })
-}
-
-const loadTree = () => {
-  let tree;
-  let response;
-  async () => {
-    await Axios.get("http://localhost:5000/getTree").then((res: any) => {
-      response = res.json();
-    })
-    function TreeNodeMaker(props: any) {
-      return (
-        <TreeNode value={props.parentValue} title={props.parentLabel}>
-          {props.children}
-        </TreeNode>
-      )
-    }
-    function LeafNodeMaker(props: any) {
-      return (
-        <TreeNode value={props.childValue} title={props.childLabel} />
-      )
-    }
-    /*ここでtreeを作ります */
-    let leaves = [];
-    
-    for (let i = 0; i < response.length; i++) {
-      /**
-       * leafを先に見つけないといけないのかな．
-       * leafからparentをたどっていく．(゜-゜)．元のresponseの形を変えたほうが良いなあ．
-       * child valueをキーにして他の三つの情報を持たせると作りよいかしら．
-       * rootからたどらないかんか．parentをキーにして情報をとってくるのか．
-       * だめか．タグを閉じられない．．一筆書きをすればよいのか？？
-       * jsonをtree構造で返すのか．．↓こんな感じ？
-       * {rootvalue: {
-       *    parentlabel: "fafdsa",
-       *    childvalue: {
-       *      parentlabel: "fdsaf",
-       *      leafvalue: {
-       *        parentvalue: "gagasdas"
-       *      }
-       *    }
-       *    childvalue: {
-       *      parentlabel: "fdsaf",
-       *      leafvalue: {
-       *        parentvalue: "gagasdas"
-       *      }
-       *  }
-       * }
-       */
-    }
-  }
-
-  return tree;
-}
 
 function App() {
+  const { Search } = Input
+
+  const onLoad = (value: string) => {
+    console.log(value);
+    Axios.post("http://localhost:5000/onLoad", {
+      url: value
+    }).then((res: any) => {
+      //alert(res)
+    })
+  }
+
+  const [value, setValue] = React.useState();
+  const [treeData, setTreeData] = React.useState([
+    {
+      id: '1',
+      pId: '0',
+      value: '1',
+      title: 'Expand to load',
+    },
+    {
+      id: '2',
+      pId: '0',
+      value: '2',
+      title: 'Expand to load',
+    },
+    {
+      id: '3',
+      pId: '0',
+      value: '3',
+      title: 'Tree Node',
+      isLeaf: true,
+    },
+  ]);
+
+  const genTreeNode = (parentId: any, isLeaf = false) => {
+    const random = Math.random().toString(36).substring(2, 6);
+    return {
+      id: random,
+      pId: parentId,
+      value: random,
+      title: isLeaf ? 'Tree Node' : 'Expand to load',
+      isLeaf,
+    };
+  };
+
+  const onLoadData = (id: any) =>
+    new Promise((resolve) => {
+      setTimeout(() => {
+        setTreeData(
+          treeData.concat([genTreeNode(id, false), genTreeNode(id, true), genTreeNode(id, true)]),
+        );
+        resolve(undefined);
+      }, 300);
+    });
+
+
+  const onChange = (newValue: any) => {
+    console.log(newValue);
+    setValue(newValue);
+  };
   return (
     <div className="App" style={{ margin: 100, width: 500 }}>
       <header className="App-header">
         <Search placeholder="RDFファイルのURLを入力してください" enterButton="Load" onSearch={onLoad} />
         <br />
         <br />
-        <Space direction="vertical" style={{ textAlign: 'center' }}>
-          <TreeSelect treeLine={true} style={{ width: 500 }}>
-            <TreeNode value="parent 1" title="parent 1">
-              <TreeNode value="parent 1-0" title="parent 1-0">
-                <TreeNode value="leaf1" title="my leaf" />
-                <TreeNode value="leaf2" title="your leaf" />
-              </TreeNode>
-              <TreeNode value="parent 1-1" title="parent 1-1">
-                <TreeNode value="sss" title="sss" />
-              </TreeNode>
-            </TreeNode>
-          </TreeSelect>
-        </Space>
+        <TreeSelect
+          treeDataSimpleMode
+          style={{
+            width: '100%',
+          }}
+          value={value}
+          dropdownStyle={{
+            maxHeight: 400,
+            overflow: 'auto',
+          }}
+          placeholder="Please select"
+          onChange={onChange}
+          loadData={onLoadData}
+          treeData={treeData}
+        />
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
         </p>

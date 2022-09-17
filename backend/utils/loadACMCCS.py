@@ -44,22 +44,23 @@ def loadACMCCS():
     return ret
 
 ###
-# func(dict, dict2):
-#   dictがreturnするもの．
-#   dict2がSPARQL結果．
-#   for key in dict:
-#       for e in dict2:
-#           if key == e["?parent"]:
-#               
-#               ret = func(dict[key], dict2)
-#               dict[key][e["?child"]] = ret
-#   return(dict)
+# sparqlをleafがとれるまで回す
+# 
+# 
+# 
+# 
+#  
 #  
 
-def makeTreeJson(dict, query_response):
-    for key in dict:
-        for row in query_response:
-            if key == row["?parent"]:
-                ret = makeTreeJson(dict[key], query_response)
-                dict[key][row["?child"]] = ret
-    return dict
+def queryChildlen(graph, parentURI):
+    query = """
+    prefix skos: <http://www.w3.org/2004/02/skos/core#>
+    select ?child ?childLabel where {
+    ?parent skos:narrower ?child.
+    ?parent skos:prefLabel ?parentLabel.
+    ?child skos:prefLabel ?childLabel.
+    filter (?parent = {} )
+    }
+    """.format(parentURI)
+    qres = graph.query(query)
+    return children
