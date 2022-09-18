@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input, Space, TreeSelect } from 'antd';
+import { Input, Space, TreeSelect, TreeSelectProps } from 'antd';
 import 'antd/dist/antd.css';
 import Axios from 'axios';
 
@@ -53,13 +53,14 @@ function App() {
     };
   };
 
-  const onLoadData = (id: any) =>
+  const onLoadData = ({ id }: any) =>
     new Promise((resolve) => {
       setTimeout(() => {
         setTreeData(
           treeData.concat([genTreeNode(id, false), genTreeNode(id, true), genTreeNode(id, true)]),
         );
         resolve(undefined);
+        console.log(treeData)
       }, 300);
     });
 
@@ -81,7 +82,7 @@ function App() {
           }}
           value={value}
           dropdownStyle={{
-            maxHeight: 400,
+            maxHeight: 1000,
             overflow: 'auto',
           }}
           placeholder="Please select"
