@@ -6,18 +6,18 @@ from urllib import response
 from flask import Flask
 from flask import request, make_response, jsonify
 from flask_cors import CORS
-from utils import load, embed, loadACMCCS, getRootNodes
+from utils import load, embed, loadACMCCS, getRootNodes, getChildrenNodes
 
 # app = Flask(__name__, static_folder="./build/static", template_folder="./build")
 app = Flask(__name__)
 CORS(app, origins="http://localhost:3000", supports_credentials=True)
 
-# @app.after_request
-# def after_request(response):
-#     response.headers.add("Access-Control-Allow-Origin", "http://localhost:3000")
-#     response.headers.add("Access-Control-Allow-Headers", "*")
-#     response.headers.add("Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS")
-#     return response
+@app.after_request
+def after_request(response):
+    response.headers.add("Access-Control-Allow-Origin", "http://localhost:3000")
+    response.headers.add("Access-Control-Allow-Headers", "*")
+    response.headers.add("Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS")
+    return response
 
 @app.route("/", methods=['GET'])
 def index():
@@ -43,9 +43,16 @@ def onLoad():
     embedding = embed.embed(rdf_graph)
     return url
 
-@app.route("/getRootNodes", methods=['GET'])
+@app.route("/getRoot", methods=['GET'])
 def getRoot():
     response = getRootNodes.getRootNodes()
+    return make_response(jsonify(response))
+
+@app.route("/getChildren", methods=['POST'])
+def getChildren():
+    parent = request.get_json()['parent']
+    print(parent)
+    response = getChildrenNodes.getChildrenNodes(parent)
     return make_response(jsonify(response))
 
 if __name__ == "__main__":

@@ -1,3 +1,4 @@
+/* eslint no-unused-expressions: "off" */
 import React from 'react';
 import { Input, Space, TreeSelect, TreeSelectProps } from 'antd';
 import 'antd/dist/antd.css';
@@ -13,9 +14,8 @@ function App() {
   const [treeData, setTreeData] = React.useState<Object[]>([]);
 
   React.useEffect(() => {
-    Axios.get("http://localhost:5000/getRootNodes").then((res) => {
+    Axios.get("http://localhost:5000/getRoot").then((res) => {
       const response = res.data;
-      console.log(response);
       let ret: Object[] = [];
       response.forEach((element: any) => {
         ret.push(
@@ -29,9 +29,8 @@ function App() {
         )
       });
       setTreeData(ret);
-      console.log(treeData);
     }).catch((err) => {
-      alert(err)
+      alert(err);
     })
   }, []);
 
@@ -42,7 +41,7 @@ function App() {
     }).then((res: any) => {
       //alert(res)
     })
-  }
+  };
 
   const genTreeNode = (parentId: any, isLeaf = false) => {
     const random = Math.random().toString(36).substring(2, 6);
@@ -55,12 +54,52 @@ function App() {
     };
   };
 
+  const getChildrenNodes = async (parent: string) => {
+    let ret: Object[] = [];
+    await Axios.post("http://localhost:5000/getChildren", { parent: parent }).then((res) => {
+      const response = res.data;
+      console.log(response);
+      response.forEach((element: any) => {
+        ret.push(
+          {
+            id: Object.keys(element)[0],
+            pId: parent,
+            value: Object.keys(element)[0],
+            title: Object.values(element)[0],
+            isLeaf: false
+          }
+        )
+      });
+    }).catch((err) => {
+      alert(err);
+    });
+    console.log(ret);
+    return ret;
+  };
+
   const onLoadData = ({ id }: any) =>
     new Promise((resolve) => {
-      setTimeout(() => {
-        setTreeData(
-          treeData.concat([genTreeNode(id, false), genTreeNode(id, true), genTreeNode(id, true)]),
-        );
+      console.log(id);
+      setTimeout(async () => {
+        let children: Object[] = [];
+        await getChildrenNodes(id).then(value => children = value);
+        // 展開しようとして葉っぱだったときの処理．葉っぱのノードのisLeadをtrueに変える．
+        if (children.length == 0) {
+          const remainedList = treeData.filter((element: any) => {
+            return element.id !== id;
+          });
+          const changingElement = treeData.filter((element: any) => {
+            return element.id === id;
+          })[0];
+          const changedElement = {...changingElement, isLeaf: true};
+          // 並び順が変わってしまう．．
+          setTreeData([...remainedList, changedElement]);
+        // 展開して子があったときの処理．単にtreeDataに足す．
+        } else {
+          setTreeData(
+            treeData.concat(children),
+          );
+        }
         resolve(undefined);
         console.log(treeData)
       }, 300);
@@ -69,6 +108,7 @@ function App() {
 
   const onChange = (newValue: any) => {
     console.log(newValue);
+    console.log(treeData);
     setValue(newValue);
   };
   return (
