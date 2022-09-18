@@ -6,7 +6,7 @@ from urllib import response
 from flask import Flask
 from flask import request, make_response, jsonify
 from flask_cors import CORS
-from utils import load, embed, loadACMCCS
+from utils import load, embed, loadACMCCS, getRootNodes
 
 # app = Flask(__name__, static_folder="./build/static", template_folder="./build")
 app = Flask(__name__)
@@ -42,6 +42,11 @@ def onLoad():
     rdf_graph = load.load(url)
     embedding = embed.embed(rdf_graph)
     return url
+
+@app.route("/getRootNodes", methods=['GET'])
+def getRoot():
+    response = getRootNodes.getRootNodes()
+    return make_response(jsonify(response))
 
 if __name__ == "__main__":
     app.debug = True

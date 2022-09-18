@@ -9,6 +9,31 @@ import Axios from 'axios';
 
 function App() {
   const { Search } = Input
+  const [value, setValue] = React.useState();
+  const [treeData, setTreeData] = React.useState<Object[]>([]);
+
+  React.useEffect(() => {
+    Axios.get("http://localhost:5000/getRootNodes").then((res) => {
+      const response = res.data;
+      console.log(response);
+      let ret: Object[] = [];
+      response.forEach((element: any) => {
+        ret.push(
+          {
+            id: Object.keys(element)[0],
+            pId: "0",
+            value: Object.keys(element)[0],
+            title: Object.values(element)[0],
+            isLeaf: false
+          }
+        )
+      });
+      setTreeData(ret);
+      console.log(treeData);
+    }).catch((err) => {
+      alert(err)
+    })
+  }, []);
 
   const onLoad = (value: string) => {
     console.log(value);
@@ -18,29 +43,6 @@ function App() {
       //alert(res)
     })
   }
-
-  const [value, setValue] = React.useState();
-  const [treeData, setTreeData] = React.useState([
-    {
-      id: '1',
-      pId: '0',
-      value: '1',
-      title: 'Expand to load',
-    },
-    {
-      id: '2',
-      pId: '0',
-      value: '2',
-      title: 'Expand to load',
-    },
-    {
-      id: '3',
-      pId: '0',
-      value: '3',
-      title: 'Tree Node',
-      isLeaf: true,
-    },
-  ]);
 
   const genTreeNode = (parentId: any, isLeaf = false) => {
     const random = Math.random().toString(36).substring(2, 6);
