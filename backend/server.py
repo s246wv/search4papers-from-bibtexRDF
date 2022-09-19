@@ -1,7 +1,4 @@
 import json
-from operator import methodcaller
-from re import A
-import re
 from urllib import response
 from flask import Flask
 from flask import request, make_response, jsonify
@@ -10,14 +7,14 @@ from utils import load, embed, loadACMCCS, getRootNodes, getChildrenNodes
 
 # app = Flask(__name__, static_folder="./build/static", template_folder="./build")
 app = Flask(__name__)
-CORS(app, origins="http://localhost:3000", supports_credentials=True)
+CORS(app, origins="http://localhost:3000", allow_headers="http://localhost:3000", supports_credentials=True)
 
-@app.after_request
-def after_request(response):
-    response.headers.add("Access-Control-Allow-Origin", "http://localhost:3000")
-    response.headers.add("Access-Control-Allow-Headers", "*")
-    response.headers.add("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
-    return response
+# @app.after_request
+# def after_request(response):
+#     response.headers.add("Access-Control-Allow-Origin", "http://localhost:3000")
+#     response.headers.add("Access-Control-Allow-Headers", "*")
+#     response.headers.add("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
+#     return response
 
 @app.route("/", methods=['GET'])
 def index():

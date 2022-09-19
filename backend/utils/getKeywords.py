@@ -8,14 +8,15 @@ def getKeywords(value, url):
     graph.parse(url)
     # Please modify this SPARQL query if you want to change the resource
     t = Template("""
-        prefix skos: <http://www.w3.org/2004/02/skos/core#>
-        select ?child ?childLabel where {
-        ?parent skos:narrower ?child.
-        ?child skos:prefLabel ?childLabel.
-        filter (?parent = <${first}> )
+        prefix bibtex: <http://www.edutella.org/bibtex#>
+        select ?papre ?keyword ?topN where {
+        ?paper bibtex:acmKeywordSimilarity ?keywords.
+        ?keywords bibtex:keyword ?keyword;
+                ?topN ?id.
+        filter(?id = <${first}>)
         }
     """)
-    query1 = t.substitute(first=parent)
+    query1 = t.substitute(first=value)
     qres1 = graph.query(query1)
     ret = []
     for row in qres1:

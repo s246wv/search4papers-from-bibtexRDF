@@ -123,7 +123,7 @@ function App() {
     });
 
   const getKeywords = async (value: string) => {
-    await Axios.post("http://localhost:5000/getKeywords", { value: value }).then((res) => {
+    await Axios.post("http://localhost:5000/getKeywords", { value: value, url: bibtexUrl }).then((res) => {
       const response = res.data;
       console.log(response);
 
