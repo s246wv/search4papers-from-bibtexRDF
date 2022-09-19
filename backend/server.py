@@ -3,11 +3,11 @@ from urllib import response
 from flask import Flask
 from flask import request, make_response, jsonify
 from flask_cors import CORS
-from utils import load, embed, loadACMCCS, getRootNodes, getChildrenNodes
+from utils import load, embed, loadACMCCS, getRootNodes, getChildrenNodes, getKeywords
 
 # app = Flask(__name__, static_folder="./build/static", template_folder="./build")
 app = Flask(__name__)
-CORS(app, origins="http://localhost:3000", allow_headers="http://localhost:3000", supports_credentials=True)
+CORS(app, origins="*", supports_credentials=True)
 
 # @app.after_request
 # def after_request(response):
@@ -50,6 +50,14 @@ def getChildren():
     parent = request.get_json()['parent']
     print(parent)
     response = getChildrenNodes.getChildrenNodes(parent)
+    return make_response(jsonify(response))
+
+@app.route("/getKeywords", methods=['POST'])
+def getKeyword():
+    req = request.get_json()
+    value = req["value"]
+    url = req["url"]
+    response = getKeywords.getKeywords(value=value, url=url)
     return make_response(jsonify(response))
 
 if __name__ == "__main__":

@@ -10,9 +10,17 @@ import type { ColumnsType } from 'antd/lib/table';
 interface TableDataType {
   key: React.Key;
   title: string;
-  keyword: number;
+  keyword: string;
   ACM_keyword: string;
   doi: string;
+}
+
+interface TreeDataType {
+  id: string,
+  pId: string,
+  value: string,
+  title: string,
+  isLeaf: boolean
 }
 
 const columns: ColumnsType<TableDataType> = [
@@ -35,21 +43,21 @@ const columns: ColumnsType<TableDataType> = [
 function App() {
   const { Search } = Input
   const [value, setValue] = React.useState();
-  const [treeData, setTreeData] = React.useState<Object[]>([]);
+  const [treeData, setTreeData] = React.useState<TreeDataType[]>([]);
   const [bibtexUrl, setBibtexUrl] = React.useState<string>();
   const [tableData, setTableData] = React.useState<TableDataType[]>([]);
 
   React.useEffect(() => {
     Axios.get("http://localhost:5000/getRoot").then((res) => {
       const response = res.data;
-      let ret: Object[] = [];
+      let ret: TreeDataType[] = [];
       response.forEach((element: any) => {
         ret.push(
           {
             id: Object.keys(element)[0],
             pId: "0",
             value: Object.keys(element)[0],
-            title: Object.values(element)[0],
+            title: element[Object.keys(element)[0]],
             isLeaf: false
           }
         )
@@ -72,7 +80,7 @@ function App() {
   };
 
   const getChildrenNodes = async (parent: string) => {
-    let ret: Object[] = [];
+    let ret: TreeDataType[] = [];
     await Axios.post("http://localhost:5000/getChildren", { parent: parent }).then((res) => {
       const response = res.data;
       console.log(response);
@@ -82,7 +90,7 @@ function App() {
             id: Object.keys(element)[0],
             pId: parent,
             value: Object.keys(element)[0],
-            title: Object.values(element)[0],
+            title: element[Object.keys(element)[0]],
             isLeaf: false
           }
         )
@@ -98,7 +106,7 @@ function App() {
     new Promise((resolve) => {
       console.log(id);
       setTimeout(async () => {
-        let children: Object[] = [];
+        let children: TreeDataType[] = [];
         await getChildrenNodes(id).then(value => children = value);
         // 展開しようとして葉っぱだったときの処理．葉っぱのノードのisLeadをtrueに変える．
         if (children.length == 0) {
@@ -123,22 +131,41 @@ function App() {
     });
 
   const getKeywords = async (value: string) => {
+    let ret: Object[] = [];
     await Axios.post("http://localhost:5000/getKeywords", { value: value, url: bibtexUrl }).then((res) => {
       const response = res.data;
       console.log(response);
-
+      ret = response;
     }).catch((err) => {
       alert(err);
     });
+    return ret;
   }
 
   const onChange = (newValue: any) => {
     // embeddingをもらって比較するのか？
     // いったんSPARQLだけにしましょう．->bibtexDataにもらっているのか．
     // getKeywordsして，setする．setされてたらTreeSelectの下にTableを出して，getKeywordsの結果を表示する．
-    console.log(newValue);
-    console.log(treeData);
+    let response: Object[] = [];
+    setTimeout( async () => {
+      await getKeywords(newValue).then(value => response = value);
+      let table: TableDataType[] = [];
+      response.forEach((element: any) => {
+        table.push(
+          {
+            key: element.paper,
+            title: element.title,
+            keyword: element.keyword,
+            ACM_keyword: treeData.find((element: any) => element.id == newValue)!.title,
+            doi: element.paper
+          }
+        )
+      });
+      console.log(table);
+      setTableData(table);
+    }, 300);
     setValue(newValue);
+    console.log(tableData);
   };
 
   return (
@@ -166,6 +193,7 @@ function App() {
           <Table
             columns={columns}
             dataSource={tableData}
+            size="middle"
           />
         }
         <p>
