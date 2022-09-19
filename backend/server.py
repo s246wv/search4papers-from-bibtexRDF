@@ -16,7 +16,7 @@ CORS(app, origins="http://localhost:3000", supports_credentials=True)
 def after_request(response):
     response.headers.add("Access-Control-Allow-Origin", "http://localhost:3000")
     response.headers.add("Access-Control-Allow-Headers", "*")
-    response.headers.add("Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS")
+    response.headers.add("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
     return response
 
 @app.route("/", methods=['GET'])

@@ -12,6 +12,7 @@ function App() {
   const { Search } = Input
   const [value, setValue] = React.useState();
   const [treeData, setTreeData] = React.useState<Object[]>([]);
+  const [bibtexData, setBibtexData] = React.useState<Object[]>([]);
 
   React.useEffect(() => {
     Axios.get("http://localhost:5000/getRoot").then((res) => {
@@ -41,17 +42,6 @@ function App() {
     }).then((res: any) => {
       //alert(res)
     })
-  };
-
-  const genTreeNode = (parentId: any, isLeaf = false) => {
-    const random = Math.random().toString(36).substring(2, 6);
-    return {
-      id: random,
-      pId: parentId,
-      value: random,
-      title: isLeaf ? 'Tree Node' : 'Expand to load',
-      isLeaf,
-    };
   };
 
   const getChildrenNodes = async (parent: string) => {
@@ -107,6 +97,9 @@ function App() {
 
 
   const onChange = (newValue: any) => {
+    // embeddingをもらって比較するのか？
+    // いったんSPARQLだけにしましょう．
+    // getKeywordsして，setする．setされてたらTreeSelectの下にTableを出して，getKeywordsの結果を表示する．
     console.log(newValue);
     console.log(treeData);
     setValue(newValue);
