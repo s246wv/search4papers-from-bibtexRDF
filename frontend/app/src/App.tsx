@@ -78,7 +78,6 @@ function App() {
   }, []);
 
   const onLoad = (value: string) => {
-    console.log(value);
     setBibtexUrl(value);
   };
 
@@ -86,7 +85,6 @@ function App() {
     let ret: TreeDataType[] = [];
     await Axios.post("http://localhost:5000/getChildren", { parent: parent }).then((res) => {
       const response = res.data;
-      console.log(response);
       response.forEach((element: any) => {
         ret.push(
           {
@@ -101,13 +99,11 @@ function App() {
     }).catch((err) => {
       alert(err);
     });
-    console.log(ret);
     return ret;
   };
 
   const onLoadData = ({ id }: any) =>
     new Promise((resolve) => {
-      console.log(id);
       setTimeout(async () => {
         let children: TreeDataType[] = [];
         await getChildrenNodes(id).then(value => children = value);
@@ -129,7 +125,6 @@ function App() {
           );
         }
         resolve(undefined);
-        console.log(treeData)
       }, 300);
     });
 
@@ -137,7 +132,6 @@ function App() {
     let ret: Object[] = [];
     await Axios.post("http://localhost:5000/getKeywords", { value: value, url: bibtexUrl }).then((res) => {
       const response = res.data;
-      console.log(response);
       ret = response;
     }).catch((err) => {
       alert(err);
@@ -162,11 +156,9 @@ function App() {
           }
         )
       });
-      console.log(table);
       setTableData(table);
     }, 300);
     setValue(newValue);
-    console.log(tableData);
   };
 
   return (
