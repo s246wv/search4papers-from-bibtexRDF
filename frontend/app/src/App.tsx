@@ -1,6 +1,6 @@
 /* eslint no-unused-expressions: "off" */
 import React from 'react';
-import { Input, TreeSelect, Table } from 'antd';
+import { Input, TreeSelect, Table, Alert } from 'antd';
 import 'antd/dist/antd.css';
 import Axios from 'axios';
 import type { ColumnsType } from 'antd/lib/table';
@@ -13,6 +13,7 @@ interface TableDataType {
   keyword: string;
   ACM_keyword: string;
   doi: string;
+  topN: string;
 }
 
 interface TreeDataType {
@@ -27,7 +28,11 @@ const columns: ColumnsType<TableDataType> = [
   {
     title: "Title",
     dataIndex: "title",
+    key: "doi",
     filtered: true,
+    render: (text, record) => {
+      return <a href={record.doi}>{text}</a>
+    }
   },
   {
     title: "Keywords",
@@ -37,6 +42,10 @@ const columns: ColumnsType<TableDataType> = [
   {
     title: "ACM Keyword",
     dataIndex: "ACM_keyword",
+  },
+  {
+    title: "Top N",
+    dataIndex: "topN",
   }
 ]
 
@@ -69,14 +78,8 @@ function App() {
   }, []);
 
   const onLoad = (value: string) => {
-    // こっちをURL保持にとどめるか．先に処理出来るものは裏で処理したいのだけれど．．
     console.log(value);
     setBibtexUrl(value);
-    // Axios.post("http://localhost:5000/onLoad", {
-    //   url: value
-    // }).then((res: any) => {
-    //   //alert(res)
-    // })
   };
 
   const getChildrenNodes = async (parent: string) => {
@@ -143,9 +146,6 @@ function App() {
   }
 
   const onChange = (newValue: any) => {
-    // embeddingをもらって比較するのか？
-    // いったんSPARQLだけにしましょう．->bibtexDataにもらっているのか．
-    // getKeywordsして，setする．setされてたらTreeSelectの下にTableを出して，getKeywordsの結果を表示する．
     let response: Object[] = [];
     setTimeout( async () => {
       await getKeywords(newValue).then(value => response = value);
@@ -153,11 +153,12 @@ function App() {
       response.forEach((element: any) => {
         table.push(
           {
-            key: element.paper,
+            key: element.paper + element.keyword,
             title: element.title,
             keyword: element.keyword,
             ACM_keyword: treeData.find((element: any) => element.id == newValue)!.title,
-            doi: element.paper
+            doi: element.paper,
+            topN: element.topN.split('#')[1],
           }
         )
       });
@@ -169,7 +170,7 @@ function App() {
   };
 
   return (
-    <div className="App" style={{ margin: 100, width: 500 }}>
+    <div className="App" style={{ margin: 100, width: 800 }}>
       <header className="App-header">
         <Search placeholder="RDFファイルのURLを入力してください" enterButton="Load" onSearch={onLoad} />
         <br />
@@ -181,7 +182,7 @@ function App() {
           }}
           value={value}
           dropdownStyle={{
-            maxHeight: 1000,
+            maxHeight: 500,
             overflow: 'auto',
           }}
           placeholder="Please select"
@@ -189,24 +190,13 @@ function App() {
           loadData={onLoadData}
           treeData={treeData}
         />
-        {tableData.length > 0 &&
+        {tableData.length > 0 ?
           <Table
             columns={columns}
             dataSource={tableData}
-            size="middle"
-          />
+          /> :
+          <Alert message="表示するデータがありません😫" />
         }
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
       </header>
     </div>
   );
