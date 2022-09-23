@@ -48,11 +48,19 @@ python server.py
 初期設定では，`localhost:5000`でWeb APIが動きます．
 
 ## 使い方
-[こちら](https://github.com/s246wv/ISARC-bibtex-rdf/tree/main/acm_ccs_emb)を参考に，ACM CCSと紐づけ済みのbibtexRDFファイルを指定してください．ファイルアップロードには対応出来ていないので，URLでアクセスできるものを指定してください．例：`https://raw.githubusercontent.com/s246wv/ISARC-bibtex-rdf/main/isarc/2022/isarc2022withACMCSS.bib.ttl`入力したらLoadボタンを押してください．  
+[こちら](https://github.com/s246wv/ISARC-bibtex-rdf/tree/main/acm_ccs_emb)を参考に，ACM CCSと紐づけ済みのbibtexRDFファイルを作成し，指定してください．例：`https://raw.githubusercontent.com/s246wv/ISARC-bibtex-rdf/main/isarc/2022/isarc2022withACMCSS.bib.ttl`入力したらLoadボタンを押してください．  
 server.pyが適切に動いていれば，SelectorをクリックするとACM CCSのタクソノミーが表示されます．語の左の黒い矢印をクリックすると，下位に分類された語が展開されます．語のラベルをクリックすると，その語が選択されます．選択された語と類似キーワードを含む文献があれば，そのリストのテーブルが下に表示されます．  
 
 下にスクリーンキャプチャを示します．  
 ![Screen Capture](demo.gif)
+
+## 既知の問題
+- ファイルアップロードに対応していません．
+- ACM CCSの下位の語を都度SPARQLで検索しておりお待たせしています．
+- 展開したときに語が葉であるかを分かりません．展開してみて初めてそれが葉であることをわかります．
+- 語の展開をしてそれが葉であることが分かったとき，その語は木の同じ深さの最後に移動します．
+- RDFファイルに想定したプロパティがない場合には機能しません．
+- 
 
 # 謝辞
 [ACM Computing Classification System](https://dl.acm.org/ccs)
