@@ -12,7 +12,8 @@
 
 ## セットアップ
 ```bash
-git clone kore
+git clone https://github.com/s246wv/search4papers-from-bibtexRDF.git
+git checkout release-20220922
 cd search4papers-from-bibtexRDF
 ```
 ### フロントエンド
