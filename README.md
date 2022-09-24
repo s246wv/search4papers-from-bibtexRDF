@@ -19,9 +19,9 @@ International Semantic Web ConferenceやEXTENDED SEMANTIC WEB CONFERENCEの文�
 
 ## セットアップ
 ```bash
-git clone https://github.com/s246wv/search4papers-from-bibtexRDF.git
-git checkout release-20220922
-cd search4papers-from-bibtexRDF
+wget https://github.com/s246wv/search4papers-from-bibtexRDF/archive/refs/tags/20220922.zip
+unzip 20220922.zip
+cd search4papers-from-bibtexRDF-20220922
 ```
 ### フロントエンド
 ```bash
