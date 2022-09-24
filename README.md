@@ -1,5 +1,12 @@
 # ACM CCSを使った文献検索
 
+## 概要
+本作品は，[ISARC bibtexRDF with ACM CCS](https://github.com/s246wv/ISARC-bibtex-rdf/tree/main/acm_ccs_emb)を参考に，ACM Computing Classification System (ACM CCS)と紐づけ済みのbibtexRDFに対して，ACM CCSを検索キーとして文献検索をするためのシステムです．
+
+ISARC bibtexRDF with ACM CCSの利用方法の一例として作成しました．ACM CCSのタクソノミーから検索語を選択し，その検索語と類似度の高いキーワードがついている文献を検索結果のリストに表示します．
+
+International Semantic Web ConferenceやEXTENDED SEMANTIC WEB CONFERENCEの文献データを作って，遊んでみてください．
+
 ## 必要なもの
 ### フロントエンド
 - node v16.13.1
