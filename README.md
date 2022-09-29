@@ -1,5 +1,8 @@
 # ACM CCSを使った文献検索
 
+## エラー調査中
+ツリーを開く際にエラーが出て展開が出来ないことがあります．調査中です．
+
 ## 概要
 本作品は，[ISARC bibtexRDF with ACM CCS](https://github.com/s246wv/ISARC-bibtex-rdf/tree/main/acm_ccs_emb)を参考に，ACM Computing Classification System (ACM CCS)と紐づけ済みのbibtexRDFに対して，ACM CCSを検索キーとして文献検索をするためのシステムです．
 
