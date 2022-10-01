@@ -18,7 +18,9 @@ def getRoot():
 @app.route("/getChildren", methods=['POST'])
 def getChildren():
     parent = request.get_json()['parent']
+    print(parent)
     response = getChildrenNodes.getChildrenNodes(parent)
+    print(response)
     return make_response(jsonify(response))
 
 @app.route("/getKeywords", methods=['POST'])
@@ -30,5 +32,5 @@ def getKeyword():
     return make_response(jsonify(response))
 
 if __name__ == "__main__":
-    app.debug = False
+    app.debug = True
     app.run(host="localhost", port=5000)

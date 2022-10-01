@@ -1,6 +1,6 @@
 /* eslint no-unused-expressions: "off" */
 import React from 'react';
-import { Input, TreeSelect, Table, Alert } from 'antd';
+import { Input, TreeSelect, Table, Alert, TreeSelectProps } from 'antd';
 import 'antd/dist/antd.css';
 import Axios from 'axios';
 import type { ColumnsType } from 'antd/lib/table';
@@ -55,6 +55,7 @@ function App() {
   const [treeData, setTreeData] = React.useState<TreeDataType[]>([]);
   const [bibtexUrl, setBibtexUrl] = React.useState<string>();
   const [tableData, setTableData] = React.useState<TableDataType[]>([]);
+  const [treeExpandedKeys, setTreeExpandedKeys] = React.useState<React.Key[]>([]);
 
   React.useEffect(() => {
     Axios.get("http://localhost:5000/getRoot").then((res) => {
@@ -102,13 +103,18 @@ function App() {
     return ret;
   };
 
-  const onLoadData = ({ id }: any) =>
-    new Promise((resolve) => {
-      setTimeout(async () => {
+  const onLoadData: any = (treeExpandedKeysValue: any) =>
+    new Promise(resolve => {
+      setTimeout( async () => {
+        console.log(treeExpandedKeysValue);
+        const id = treeExpandedKeysValue[treeExpandedKeysValue.length - 1];
+        console.log(id);
+        setTreeExpandedKeys(treeExpandedKeysValue);
         let children: TreeDataType[] = [];
         await getChildrenNodes(id).then(value => children = value);
+        console.log(children)
         // 展開しようとして葉っぱだったときの処理．葉っぱのノードのisLeadをtrueに変える．
-        if (children.length == 0) {
+        if (children.length === 0) {
           const remainedList = treeData.filter((element: any) => {
             return element.id !== id;
           });
@@ -179,7 +185,10 @@ function App() {
           }}
           placeholder="Please select"
           onChange={onChange}
-          loadData={onLoadData}
+//          loadData={onLoadData}
+//          onTreeLoad={onLoadData}
+          treeExpandedKeys={treeExpandedKeys}
+          onTreeExpand={onLoadData}
           treeData={treeData}
         />
         {tableData.length > 0 ?
