@@ -1,6 +1,6 @@
 /* eslint no-unused-expressions: "off" */
 import React from 'react';
-import { Input, TreeSelect, Table, Alert, TreeSelectProps } from 'antd';
+import { Input, TreeSelect, Table, Alert } from 'antd';
 import 'antd/dist/antd.css';
 import Axios from 'axios';
 import type { ColumnsType } from 'antd/lib/table';
@@ -106,13 +106,10 @@ function App() {
   const onLoadData: any = (treeExpandedKeysValue: any) =>
     new Promise(resolve => {
       setTimeout( async () => {
-        console.log(treeExpandedKeysValue);
         const id = treeExpandedKeysValue[treeExpandedKeysValue.length - 1];
-        console.log(id);
         setTreeExpandedKeys(treeExpandedKeysValue);
         let children: TreeDataType[] = [];
         await getChildrenNodes(id).then(value => children = value);
-        console.log(children)
         // 展開しようとして葉っぱだったときの処理．葉っぱのノードのisLeadをtrueに変える．
         if (children.length === 0) {
           const remainedList = treeData.filter((element: any) => {

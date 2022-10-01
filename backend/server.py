@@ -18,9 +18,7 @@ def getRoot():
 @app.route("/getChildren", methods=['POST'])
 def getChildren():
     parent = request.get_json()['parent']
-    print(parent)
     response = getChildrenNodes.getChildrenNodes(parent)
-    print(response)
     return make_response(jsonify(response))
 
 @app.route("/getKeywords", methods=['POST'])
