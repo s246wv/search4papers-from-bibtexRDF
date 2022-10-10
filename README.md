@@ -19,7 +19,7 @@ International Semantic Web ConferenceやEXTENDED SEMANTIC WEB CONFERENCEの文�
 
 ## セットアップ
 ```bash
-wget https://github.com/s246wv/search4papers-from-bibtexRDF/archive/refs/tags/20220922.zip
+wget https://github.com/s246wv/search4papers-from-bibtexRDF/archive/refs/tags/20220922-2.zip
 unzip 20220922.zip
 cd search4papers-from-bibtexRDF-20220922
 ```
