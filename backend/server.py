@@ -1,25 +1,30 @@
 from flask import Flask
 from flask import request, make_response, jsonify
 from flask_cors import CORS
-from utils import getRootNodes, getChildrenNodes, getKeywords
+from utils import utility as util
+from rdflib import Graph
 
 app = Flask(__name__)
 CORS(app, origins="*", supports_credentials=True)
 
+graph = Graph()
+# The 'publicID' is unofficial base URI.
+graph.parse("./backend/utils/acm_ccs2012-1626988337597.xml", publicID="https://dl.acm.org/ccs/")
+
 @app.route("/", methods=['GET'])
 def index():
-    return "hogehoge"
+    return "the server is working."
 
 @app.route("/getRoot", methods=['GET'])
 def getRoot():
-    response = getRootNodes.getRootNodes()
+    response = util.getRootNodes(graph)
     return make_response(jsonify(response))
 
 @app.route("/getChildren", methods=['POST'])
 def getChildren():
     parent = request.get_json()['parent']
     print(parent)
-    response = getChildrenNodes.getChildrenNodes(parent)
+    response = util.getChildrenNodes(parent, graph)
     return make_response(jsonify(response))
 
 @app.route("/getKeywords", methods=['POST'])
@@ -27,7 +32,7 @@ def getKeyword():
     req = request.get_json()
     value = req["value"]
     url = req["url"]
-    response = getKeywords.getKeywords(value=value, url=url)
+    response = util.getKeywords(value=value, url=url)
     return make_response(jsonify(response))
 
 if __name__ == "__main__":
