@@ -1,9 +1,11 @@
 /* eslint no-unused-expressions: "off" */
 import React from 'react';
-import { Input, TreeSelect, Table, Alert } from 'antd';
+import { Input, TreeSelect, Table, Alert, Button, message, Upload } from 'antd';
 import 'antd/dist/antd.css';
 import Axios from 'axios';
 import type { ColumnsType } from 'antd/lib/table';
+import { UploadOutlined } from '@ant-design/icons';
+import type { UploadProps } from 'antd';
 
 //import './App.css';
 
@@ -56,6 +58,50 @@ function App() {
   const [bibtexUrl, setBibtexUrl] = React.useState<string>();
   const [tableData, setTableData] = React.useState<TableDataType[]>([]);
 
+  // 指定されたURLの中身を取得し，backendにpostする．
+  const onLoad = (value: string) => {
+    // setBibtexUrl(value);
+    fetch(value).then(async (res) => {
+      const text = await res.text();
+      sendText(text);
+    }).catch((err) => {
+      console.log(err);
+    })
+  };
+
+  // 指定されたファイルの中身を取得し，backendにpostする．ファイルアップロードを援用しているのでよろしくない．
+  const props: UploadProps = {
+    beforeUpload: (file) => {
+      console.log(file);
+      const allowedExtention = new RegExp('.(xml|ttl|trig)$');
+      const isRDF = file.name.search(allowedExtention) !== -1;
+      // const isRDF = (file.type === 'application/rdf+xml') || (file.type === 'application/trig') || (file.type === 'text/turtle');
+      if (!isRDF) {
+        message.error(`${file.name} is not a RDF file`);
+      }
+      return isRDF || Upload.LIST_IGNORE;
+    },
+    onChange: (info) => {
+      console.log(info.fileList);
+    },
+    action: async (file) => {
+      const contentText = await file.text();
+      console.log(contentText);
+      // send RDF as text and call dummy post method.
+      sendText(contentText);
+      return "dummyURL"
+    }
+  };
+
+  // ファイルそのまま送られるとbackendが困るのでテキストで送る．
+  const sendText = async (text: string) => {
+    await Axios.post("http://localhost:5000/postRDF", {value: text}).then((res) => {
+      console.log("post success.");
+    }).catch((err) => {
+      console.log("post failed.");
+    });
+  }
+
   React.useEffect(() => {
     Axios.get("http://localhost:5000/getRoot").then((res) => {
       const response = res.data;
@@ -77,9 +123,7 @@ function App() {
     })
   }, []);
 
-  const onLoad = (value: string) => {
-    setBibtexUrl(value);
-  };
+
 
   const getChildrenNodes = async (parent: string) => {
     let ret: TreeDataType[] = [];
@@ -141,7 +185,7 @@ function App() {
 
   const onChange = (newValue: any) => {
     let response: Object[] = [];
-    setTimeout( async () => {
+    setTimeout(async () => {
       await getKeywords(newValue).then(value => response = value);
       let table: TableDataType[] = [];
       response.forEach((element: any) => {
@@ -165,6 +209,10 @@ function App() {
     <div className="App" style={{ margin: 100, width: 800 }}>
       <header className="App-header">
         <Search placeholder="RDFファイルのURLを入力してください" enterButton="Load" onSearch={onLoad} />
+        <div>↓Please upload RDF file OR select the RDF URL↑</div>
+        <Upload {...props}>
+          <Button icon={<UploadOutlined />}>Upload RDF only</Button>
+        </Upload>
         <br />
         <br />
         <TreeSelect

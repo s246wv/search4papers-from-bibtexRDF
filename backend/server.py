@@ -11,6 +11,8 @@ graph = Graph()
 # The 'publicID' is unofficial base URI.
 graph.parse("./backend/utils/acm_ccs2012-1626988337597.xml", publicID="https://dl.acm.org/ccs/")
 
+bibGraph = Graph()
+
 @app.route("/", methods=['GET'])
 def index():
     return "the server is working."
@@ -31,9 +33,16 @@ def getChildren():
 def getKeyword():
     req = request.get_json()
     value = req["value"]
-    url = req["url"]
-    response = util.getKeywords(value=value, url=url)
+    response = util.getKeywords(value=value, graph=bibGraph)
     return make_response(jsonify(response))
+
+@app.route("/postRDF", methods=['POST'])
+def sendText():
+    req = request.get_json()
+    value = req["value"]
+    bibGraph.parse(data=value)
+    # 特に使わない．
+    return ""
 
 if __name__ == "__main__":
     app.debug = True
